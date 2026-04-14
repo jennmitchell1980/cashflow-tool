@@ -15,7 +15,7 @@ exports.handler = async function(event, context) {
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: "claude-3-5-haiku-20241022",
+       model: "claude-3-haiku-20240307"
         max_tokens: 4000,
         system: "You are a JSON generator. You must respond with ONLY valid JSON. No explanation, no markdown, no backticks, no commentary. Just raw JSON.",
         messages: [{ role: "user", content: body.prompt }]
