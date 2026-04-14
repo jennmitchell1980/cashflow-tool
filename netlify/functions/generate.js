@@ -4,9 +4,7 @@ exports.handler = async function(event, context) {
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "POST, OPTIONS"
   };
-
   if (event.httpMethod === "OPTIONS") return { statusCode: 200, headers, body: "OK" };
-
   try {
     const body = JSON.parse(event.body);
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -17,14 +15,13 @@ exports.handler = async function(event, context) {
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: "claude-3-haiku-20240307",
-        max_tokens: 2000,
+        model: "claude-3-5-haiku-20241022",
+        max_tokens: 4000,
+        system: "You are a JSON generator. You must respond with ONLY valid JSON. No explanation, no markdown, no backticks, no commentary. Just raw JSON.",
         messages: [{ role: "user", content: body.prompt }]
       })
     });
-
     const data = await response.json();
-
     if (data.error) {
       return {
         statusCode: 200,
@@ -32,15 +29,12 @@ exports.handler = async function(event, context) {
         body: JSON.stringify({ content: "AI Error: " + data.error.message })
       };
     }
-
     const text = data?.content?.[0]?.text || "No response text found";
-
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({ content: text })
     };
-
   } catch (err) {
     return {
       statusCode: 200,
